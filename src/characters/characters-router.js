@@ -23,7 +23,7 @@ const serializeCharacter = (character) => ({
 //needed by the character library to get all characters names
 charactersRouter
   .route("/characters")
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     CharactersService.getAllCharacters(req.app.get("db"))
       .then((characters) => {
