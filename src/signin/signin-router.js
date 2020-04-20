@@ -2,8 +2,17 @@ const express = require("express");
 const signinRouter = express.Router();
 const bodyParser = express.json();
 const bcrypt = require("bcrypt-nodejs");
+const jwt = require("jsonwebtoken");
+const config = require("../config");
 
-signinRouter.route("/signin").post(bodyParser, (req, res) => {
+const createJwt = (subject, payload) => {
+  return jwt.sign(payload, config.JWT_SECRET, {
+    subject,
+    algorithm: "HS256",
+  });
+};
+
+signinRouter.route("/signin").post(bodyParser, (req, res, next) => {
   req.app
     .get("db")
     .select("email", "hash")
@@ -17,8 +26,18 @@ signinRouter.route("/signin").post(bodyParser, (req, res) => {
           .select("*")
           .from("users")
           .where("email", "=", req.body.email)
-          .then((user) => {
-            res.json(user[0]);
+          .then((compareMatch) => {
+            if (!compareMatch) {
+              return res.status(400).json({
+                error: "Incorrect user_name or password",
+              });
+            }
+            console.log(compareMatch);
+            const sub = data.email;
+            const payload = { user_id: data.hash };
+            res.send({
+              authToken: createJwt(sub, payload),
+            });
           })
           .catch((err) => res.status(400).json("unable to get user"));
       } else {
