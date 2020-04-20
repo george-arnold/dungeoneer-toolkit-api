@@ -32,9 +32,8 @@ signinRouter.route("/signin").post(bodyParser, (req, res, next) => {
                 error: "Incorrect user_name or password",
               });
             }
-            console.log(compareMatch);
-            const sub = data.email;
-            const payload = { user_id: data.hash };
+            const sub = compareMatch[0].email;
+            const payload = { id: compareMatch[0].id };
             res.send({
               authToken: createJwt(sub, payload),
             });
