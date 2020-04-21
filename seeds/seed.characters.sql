@@ -1,0 +1,92 @@
+BEGIN;
+
+TRUNCATE characters RESTART IDENTITY CASCADE;
+
+INSERT INTO
+  characters (
+    name,
+    level,
+    role,
+    hp,
+    strength,
+    dexterity,
+    constitution,
+    intelligence,
+    wisdom,
+    charisma
+  )
+VALUES
+  (
+    'Aragorn',
+    12,
+    'Warrior',
+    130,
+    18,
+    16,
+    15,
+    14,
+    16,
+    18
+  ),
+  (
+    'Gandalf',
+    20,
+    'Mage',
+    90,
+    12,
+    16,
+    12,
+    20,
+    18,
+    12
+  ),
+  (
+    'Gimli',
+    12,
+    'Brute',
+    200,
+    18,
+    18,
+    10,
+    12,
+    10,
+    8
+  ),
+  (
+    'Legolas',
+    12,
+    'Hunter',
+    120,
+    14,
+    18,
+    12,
+    12,
+    20,
+    16
+  ),
+  (
+    'Boromir',
+    8,
+    'Warrior',
+    0,
+    16,
+    12,
+    14,
+    8,
+    8,
+    10
+  ),
+  (
+    'Hobbit',
+    4,
+    'Thief',
+    40,
+    10,
+    16,
+    12,
+    16,
+    12,
+    8
+  );
+
+COMMIT;
