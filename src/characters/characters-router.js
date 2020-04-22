@@ -9,7 +9,7 @@ const serializeCharacter = (character) => ({
   id: character.id,
   name: character.name,
   level: character.level,
-  class: character.role,
+  role: character.role,
   hp: character.hp,
   strength: character.strength,
   dexterity: character.dexterity,
@@ -23,7 +23,7 @@ const serializeCharacter = (character) => ({
 //needed by the character library to get all characters names
 charactersRouter
   .route("/characters")
-  .all(requireAuth)
+  // .all(requireAuth)
   .get((req, res, next) => {
     CharactersService.getAllCharacters(req.app.get("db"))
       .then((characters) => {
@@ -50,43 +50,62 @@ charactersRouter
 //   //     .catch(next);
 // });
 
-// charactersRouter
-//   .route("/:characterId")
-//   .all(requireAuth)
-//   .all((req, res, next) => {
-//     characterService
-//       .getcharacterById(req.app.get("db"), req.params.characterId)
-//       .then((character) => {
-//         if (!character) {
-//           return res.status(404).json({
-//             error: { message: `character does not exist` },
-//           });
-//         }
-//         res.character = character;
-//         next();
-//       })
-//       .catch(next);
-//   })
-//   .get((req, res, next) => {
-//     res.json(serializecharacter(res.character));
-//   })
+charactersRouter
+  .route("/characters/:characterId")
+  // .all(requireAuth)
+  .get((req, res, next) => {
+    const { characterId } = req.params;
+    CharactersService.getCharacterById(req.app.get("db"), characterId)
+      .then((character) => {
+        if (!character) {
+          return res.status(404).json({
+            error: { message: `character does not exist` },
+          });
+        }
+        res.json(serializeCharacter(character));
+        next();
+      })
+      .catch(next);
+  })
 
-//   .patch(bodyParser, (req, res, next) => {
-//     const { venue, amount, comments } = req.body;
-//     const characterToUpdate = { venue, amount, comments };
-
-//     characterService
-//       .updatecharacter(
-//         req.app.get("db"),
-//         req.params.characterId,
-//         characterToUpdate
-//       )
-//       .then((numRowsAffected) => {
-//         res.status(204).json({ info: { numRowsAffected: numRowsAffected } }),
-//           end();
-//       })
-//       .catch(next);
-//   });
+  .patch(bodyParser, (req, res, next) => {
+    const {
+      name,
+      level,
+      role,
+      hp,
+      strength,
+      dexterity,
+      constitution,
+      intelligence,
+      wisdom,
+      charisma,
+    } = req.body;
+    const characterToUpdate = {
+      name,
+      level,
+      role,
+      hp,
+      strength,
+      dexterity,
+      constitution,
+      intelligence,
+      wisdom,
+      charisma,
+    };
+    const { characterId } = req.params;
+    CharactersService.updateCharacter(
+      req.app.get("db"),
+      characterId,
+      characterToUpdate
+    )
+      .then((numRowsAffected) => {
+        console.log(numRowsAffected);
+        res.status(202).json({ info: { numRowsAffected: numRowsAffected } }),
+          end();
+      })
+      .catch(next);
+  });
 
 // for use in a future implementation
 // .delete((req, res, next) => {

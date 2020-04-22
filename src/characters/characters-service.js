@@ -5,20 +5,20 @@ const CharactersService = {
   insertCharacter(knex, newCharacter) {
     return knex
       .insert(newCharacter)
-      .into("Characters")
+      .into("characters")
       .returning("*")
       .then((rows) => {
         return rows[0];
       });
   },
-  getCharacterById(knex, CharacterId) {
-    return knex.from("Characters").select("*").where("id", CharacterId).first();
+  getCharacterById(knex, characterId) {
+    return knex.from("characters").select("*").where("id", characterId).first();
   },
   deleteCharacter(knex, id) {
-    return knex("Characters").where({ id }).delete();
+    return knex("characters").where({ id }).delete();
   },
   updateCharacter(knex, id, newCharacter) {
-    return knex("Characters").where({ id }).update(newCharacter);
+    return knex("characters").where({ id }).update(newCharacter);
   },
 };
 
