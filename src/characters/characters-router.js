@@ -27,7 +27,7 @@ charactersRouter
   .get((req, res, next) => {
     CharactersService.getAllCharacters(req.app.get("db"))
       .then((characters) => {
-        res.json(characters.map(serializeCharacter));
+        res.status(200).json(characters.map(serializeCharacter));
       })
       .catch(next);
   });
