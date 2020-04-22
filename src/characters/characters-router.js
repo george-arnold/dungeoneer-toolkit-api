@@ -101,7 +101,7 @@ charactersRouter
     )
       .then((numRowsAffected) => {
         console.log(numRowsAffected);
-        res.status(202).json({ info: { numRowsAffected: numRowsAffected } }),
+        res.status(200).json({ info: { numRowsAffected: numRowsAffected } }),
           end();
       })
       .catch(next);
