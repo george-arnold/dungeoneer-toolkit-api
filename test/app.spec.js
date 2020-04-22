@@ -18,19 +18,7 @@ describe("characters endpoints", () => {
     wisdom: 16,
     charisma: 20,
   };
-  let patchCharacter = {
-    id: 0,
-    name: "Conan",
-    level: 15,
-    role: "Brute",
-    hp: 200,
-    strength: 10,
-    dexterity: 10,
-    constitution: 18,
-    intelligence: 10,
-    wisdom: 10,
-    charisma: 12,
-  };
+
   before("make knex instance", () => {
     db = knex({
       client: "pg",
@@ -55,13 +43,25 @@ describe("characters endpoints", () => {
     // });
 
     it("responds 200 to specific character of test character id GET", () => {
-      return supertest(app).get("/api/character/0").expect(200);
+      return supertest(app).get("/api/characters/1").expect(200);
     });
 
     it("responds 200 on PATCH", () => {
+      let patchCharacter = {
+        name: "Conan",
+        level: 15,
+        role: "Brute",
+        hp: 200,
+        strength: 10,
+        dexterity: 10,
+        constitution: 18,
+        intelligence: 10,
+        wisdom: 10,
+        charisma: 12,
+      };
       return supertest(app)
-        .patch("/api/character/0")
-        .send({ patchCharacter })
+        .patch("/api/characters/1")
+        .send(patchCharacter)
         .expect(200);
     });
     // future implementation:
