@@ -1,7 +1,7 @@
 const express = require("express");
 const CharactersService = require("./characters-service");
 const bodyParser = express.json();
-const path = require("path");
+// const path = require("path");
 const { requireAuth } = require("../jwt-auth");
 const charactersRouter = express.Router();
 
@@ -23,7 +23,7 @@ const serializeCharacter = (character) => ({
 //needed by the character library to get all characters names
 charactersRouter
   .route("/characters")
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     CharactersService.getAllCharacters(req.app.get("db"))
       .then((characters) => {
@@ -52,7 +52,7 @@ charactersRouter
 
 charactersRouter
   .route("/characters/:characterId")
-  // .all(requireAuth)
+  .all(requireAuth)
   .get((req, res, next) => {
     const { characterId } = req.params;
     CharactersService.getCharacterById(req.app.get("db"), characterId)

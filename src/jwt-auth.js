@@ -7,7 +7,7 @@ const verifyJwt = (token) => {
   });
 };
 
-const getUserWithUserName = (db, email) => {
+const getUserWithEmail = (db, email) => {
   return db("users").where({ email }).first();
 };
 
@@ -21,7 +21,7 @@ const requireAuth = (req, res, next) => {
   }
 
   const payload = verifyJwt(bearerToken);
-  getUserWithUserName(req.app.get("db"), payload.sub)
+  getUserWithEmail(req.app.get("db"), payload.sub)
     .then((user) => {
       if (!user) return res.status(401).json({ error: "Unauthorized request" });
       req.user = user;
@@ -33,6 +33,14 @@ const requireAuth = (req, res, next) => {
     });
   next();
 };
+
+// function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
+//   const token = jwt.sign({ email: user.id }, secret, {
+//     subject: user.user_name,
+//     algorithm: "HS256",
+//   });
+//   return `Bearer ${token}`;
+// }
 module.exports = {
   requireAuth,
 };
