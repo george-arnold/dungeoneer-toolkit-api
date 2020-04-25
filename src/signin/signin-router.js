@@ -75,31 +75,28 @@ signinRouter
     });
   });
 
-// signinRouter.route("/register").post(bodyParser, (req, res, next) => {
-//   const { password, email } = req.body;
-//   for (const field of ["email", "password"])
-//     if (!req.body[field])
-//       return res.status(400).json({
-//         error: `Missing '${field}' in request body`,
-//       });
-//   if (password.length < 8) {
-//     return res.status(400).json({
-//       error: "Password must be longer than 8 characters",
-//     });
-//   }
-//   if (password.startsWith(" ") || password.endsWith(" ")) {
-//     return res.status(400).json({
-//       error: "Password must not start or end with empty spaces",
-//     });
-//   }
-//   UsersService.hasUserWithEmail(req.app.get("db"), email)
-//     .then((user) => {
-//       if (user) return res.status(400).json({ error: `Email already taken` });
-
-//       res.send("ok");
-//     })
-//     .catch(next);
-// });
-//--
+signinRouter.route("/register").post(bodyParser, (req, res) => {
+  const { email, name, password } = req.body;
+  const hash = bcrypt.hashSync(password);
+  req.app.get("db").transaction((trx) => {
+    trx
+      .insert({
+        hash: hash,
+        email: email,
+      })
+      .into("login")
+      .returning("email")
+      .then((loginEmail) => {
+        return trx("users")
+          .returning("*")
+          .insert({ email: loginEmail[0], name: name, joined: new Date() })
+          .then((user) => {
+            res.json(user[0]);
+          });
+      })
+      .then(trx.commit)
+      .catch(trx.rollback);
+  });
+});
 
 module.exports = signinRouter;
