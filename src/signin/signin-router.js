@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt-nodejs");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
 // const UsersService = require("./signin-service");
-const { requireAuth } = require("../middleware/jwt-auth");
+// const { requireAuth } = require("../jwt-auth");
 
 const createJwt = (subject, payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {

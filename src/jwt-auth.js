@@ -31,7 +31,6 @@ const requireAuth = (req, res, next) => {
       console.error(err);
       next(err);
     });
-  next();
 };
 
 // function makeAuthHeader(user, secret = process.env.JWT_SECRET) {
