@@ -1,7 +1,6 @@
 const express = require("express");
 const CharactersService = require("./characters-service");
 const bodyParser = express.json();
-// const path = require("path");
 const { requireAuth } = require("../jwt-auth");
 const charactersRouter = express.Router();
 
@@ -31,29 +30,12 @@ charactersRouter
       })
       .catch(next);
   });
-// for use in a future implementation
-// .post(bodyParser, (req, res, next) => {
-//   //   const { venue, amount, category_id } = req.body;
-//   //   const newcharacter = { venue, amount, category_id };
-//   //   for (const [key, value] of Object.entries(newcharacter))
-//   //     if (value == null)
-//   //       return res.status(400).json({
-//   //         error: `Missing '${key}' in request body`,
-//   //       });
-//   //   characterService.insertcharacter(req.app.get("db"), newcharacter)
-//   //     .then((character) => {
-//   //       res
-//   //         .status(201)
-//   //         .location(path.posix.join(req.originalUrl, `/${character.id}`))
-//   //         .json(serializecharacter(character));
-//   //     })
-//   //     .catch(next);
-// });
 
 charactersRouter
   .route("/characters/:characterId")
   .all(requireAuth)
   .get((req, res, next) => {
+    //gets a specific character of id in params
     const { characterId } = req.params;
     CharactersService.getCharacterById(req.app.get("db"), characterId)
       .then((character) => {
@@ -69,6 +51,7 @@ charactersRouter
   })
 
   .patch(bodyParser, (req, res, next) => {
+    // deconstruct all keys
     const {
       name,
       level,
@@ -81,6 +64,7 @@ charactersRouter
       wisdom,
       charisma,
     } = req.body;
+    //construct character object
     const characterToUpdate = {
       name,
       level,
@@ -106,16 +90,5 @@ charactersRouter
       })
       .catch(next);
   });
-
-// for use in a future implementation
-// .delete((req, res, next) => {
-//   characterService
-//     .deletecharacter(req.app.get("db"), req.params.characterId)
-//     .then((numRowsAffected) => {
-//       res.status(202).json({ info: { numRowsAffected: numRowsAffected } }),
-//         end();
-//     })
-//     .catch(next);
-// });
 
 module.exports = charactersRouter;

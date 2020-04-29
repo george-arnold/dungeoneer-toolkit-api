@@ -4,9 +4,8 @@ const bodyParser = express.json();
 const bcrypt = require("bcrypt-nodejs");
 const jwt = require("jsonwebtoken");
 const config = require("../config");
-// const UsersService = require("./signin-service");
-// const { requireAuth } = require("../jwt-auth");
 
+//makes the jwt
 const createJwt = (subject, payload) => {
   return jwt.sign(payload, config.JWT_SECRET, {
     subject,
@@ -23,6 +22,7 @@ signinRouter
       .from("login")
       .where("email", "=", req.body.email)
       .then((data) => {
+        //compares passwords
         const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
         if (isValid) {
           return req.app
@@ -31,9 +31,10 @@ signinRouter
             .from("users")
             .where("email", "=", req.body.email)
             .then((compareMatch) => {
+              //looks at email that matches user input
               if (!compareMatch) {
                 return res.status(400).json({
-                  error: "Incorrect user_name or password",
+                  error: "Incorrect email or password",
                 });
               }
               const sub = compareMatch[0].email;
@@ -51,6 +52,7 @@ signinRouter
       .catch((err) => res.status(400).json({ email: "Email not found" }));
   })
   .post(bodyParser, (req, res) => {
+    //posts using login table
     const { email, name, password } = req.body;
     const hash = bcrypt.hashSync(password);
 
